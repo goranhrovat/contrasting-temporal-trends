@@ -26,3 +26,7 @@ Read comment above each variable.
 In the ## Optional settings ## section you can define additional years and/or ages discretizations.
 
 Run file to start Shiny web server.
+
+
+# Reference: #
+Hrovat, G., Stiglic, G., Kokol, P. and Ojsteršek, M., 2014. Contrasting temporal trend discovery for large healthcare databases. Computer methods and programs in biomedicine, 113(1), pp.251-257.
