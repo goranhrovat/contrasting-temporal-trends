@@ -40,6 +40,9 @@ kode.list <- unlist(readRDS(paste0(scriptsDir,"/codeList.rds")))
 # get all available diagnoses in the directory
 firstDir <- list.dirs(allDataDir, full.names = F, recursive = F)[1]
 ostaleDiagnoze <- gsub("(^D_)|(.rds$)", "", list.files(paste0(allDataDir,"/", firstDir), pattern = "D_"))
+# keep only diagnoses where file exists
+keep.list <- intersect(names(kode.list), ostaleDiagnoze)
+kode.list <- kode.list[keep.list]
 # get only diagnoses not on the selectize list
 ostaleDiagnoze <- setdiff(ostaleDiagnoze, names(kode.list))
 # add them to selectize list and add name missing
@@ -143,8 +146,8 @@ server <- function(input, output, session) {
   for (selID in c("itemSet", "lhsRule", "rhsRule")) {
     updateSelectizeInput(session, selID, choices = kode.list,
          options=list(
-          maxOptions = 10,
-          maxItems = 15,
+          maxOptions = 30,
+          maxItems = 30,
           searchField = c("value", "label"),
           render = I('{
                       option: function(item, escape) {
@@ -277,7 +280,11 @@ server <- function(input, output, session) {
       session$userData$currentModel <- model
       
       ylab <- if(measure=="support") "support" else if (measure=="lift") "lift" else "confidence"
-      xlab <- if(length(unique(dat$Month))==4) "quarter" else if (length(unique(dat$Month))==12) "month" else "half-year"
+      
+      xlab <- if(length(unique(dat$Month))==4) "quarter"
+              else if (length(unique(dat$Month))==12) "month"
+              else if (length(unique(dat$Month))==2) "half-year"
+              else "year"
       
       numLeaves <- terminalCount(model@tree)
       rM <- range(response(model))
